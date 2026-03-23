@@ -12,7 +12,6 @@ Concepts used:
 - While loop.
 - Safe calls.
 - Null check.
-- The trim() function to remove whitespaces inputted by user.
 
 Challenges faced:  
 - Where to apply safe calls (?.).
