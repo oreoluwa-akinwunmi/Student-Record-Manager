@@ -32,24 +32,29 @@ fun main() {
 fun addStudent() {
     println("Enter Student Name: ")
     val name = readLine()?.trim()
+    if (name.isNullOrBlank()) {
+        println("Name cannot be empty."); return
+    }
 
     println("Enter Student Age: ")
     val age = readLine()?.toIntOrNull()
 
-    println("Enter Student Score: ")
+    println("Enter Student Score (0-100): ")
     val score = readLine()?.toDoubleOrNull()
 
-    if (name.isNullOrBlank() || age == null || score == null) {
+    if (age == null || score == null) {
         println("Age and Score must be valid numbers. Student not added.")
     } else {
         students.add(Student(name, age, score))
+        println("Student successfully added.")
     }
 }
 
 fun displayStudents() {
     if (students.isNotEmpty()) {
+        println("--- All Students --")
         for (student in students) {
-            println(student)
+            println("Name: ${student.name} \t Age: ${student.age} \t Score: ${student.score}") // make the displayed result be refined
         }
     } else {
         println("No student found. Please enter a student record")
@@ -59,14 +64,17 @@ fun displayStudents() {
 
 fun findStudent() {
     println("Enter Student Name: ")
-    val searchName = readLine()
+    val searchName = readLine()?.trim()
 
     val foundStudent = students.find {it.name.equals(searchName, true) }
 
-    if (foundStudent != null) {
-        println("Found Student: $foundStudent")
+    if (searchName.isNullOrBlank()) {
+        println("Invalid input")
+    } else if (foundStudent != null) {
+        println("--- Found Student ---")
+        println("Name: ${foundStudent.name}, Age: ${foundStudent.age}, Score: ${foundStudent.score}") // make the displayed result be refined
     } else {
-        println("Sorry, this name doesn't exist in the record.")
+        println("Sorry, student record could not be found.")
     }
 }
 
