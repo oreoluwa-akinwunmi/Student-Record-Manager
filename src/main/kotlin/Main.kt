@@ -1,8 +1,8 @@
-// Using data class to store record
+// A student record manager using mutable list to store student data
 
-data class Student(val name: String, val age: Int, val score: Double)
-
-val students = mutableListOf<Student>()
+val names = mutableListOf<String>()
+val ages = mutableListOf<Int>()
+val scores = mutableListOf<Double>()
 
 fun main() {
     var running = true
@@ -15,7 +15,7 @@ fun main() {
         println("4. Calculate Average Score")
         println("5. Delete Student Record")
         println("6. Exit")
-        print("Choose an option: ")
+        println("Please select an option: ")
 
         when (readLine()) {
             "1" -> addStudent()
@@ -27,17 +27,17 @@ fun main() {
                 println("Goodbye")
                 running = false
             }
-            else -> println("Invalid Option")
         }
     }
 }
 
-
 fun addStudent() {
     println("Enter Student Name: ")
     val name = readLine()?.trim()
+
     if (name.isNullOrBlank()) {
-        println("Name cannot be empty."); return
+        println("Name cannot be empty.")
+        return
     }
 
     println("Enter Student Age: ")
@@ -47,52 +47,67 @@ fun addStudent() {
     val score = readLine()?.toDoubleOrNull()
 
     if (age == null || score == null) {
-        println("Age and Score must be valid numbers. Student not added.")
+        println("Age and score must be valid numbers. Student not added.")
     } else {
-        students.add(Student(name, age, score))
-        println("Student successfully added.")
+        names.add(name)
+        ages.add(age)
+        scores.add(score)
+        println("Student added.")
     }
+
 }
 
 fun displayStudents() {
-    if (students.isNotEmpty()) {
-        println("--- All Students --")
-        for (student in students) {
-            println("Name: ${student.name} \t Age: ${student.age} \t Score: %.2f".format(student.score)) // make the displayed result be refined
-        }
+    if (names.isEmpty()) {
+        println("No record available.")
     } else {
-        println("No student found. Please enter a student record")
+        println("--- All Students Record ---")
+        for (i in names.indices) {
+            println("Name: ${names[i]} \t Age: ${ages[i]} \t Score: %.2f".format(scores[i]))
+        }
     }
-
 }
 
 fun findStudent() {
+    if (names.isEmpty()) {
+        println("No record available.")
+        return
+    }
+
     println("Enter Student Name: ")
     val searchName = readLine()?.trim()
 
-    val foundStudent = students.find {it.name.equals(searchName, true) }
-
     if (searchName.isNullOrBlank()) {
-        println("Name cannot be empty.")
-    } else if (foundStudent != null) {
-        println("--- Found Student ---")
-        println("Name: ${foundStudent.name}, Age: ${foundStudent.age}, Score: %.2f".format(foundStudent.score)) // make the displayed result be refined
-    } else {
-        println("Sorry, student record could not be found.")
+        println("Please input a name.")
+        return
     }
+
+    val foundStudent = names.indexOfFirst { it.equals(searchName, ignoreCase = true) }
+
+    if (foundStudent == -1) {
+        println("Student not found.")
+    } else {
+        println("Name: ${names[foundStudent]} \t Age: ${ages[foundStudent]} \t Score: %.2f".format(scores[foundStudent]))
+    }
+
+
 }
 
 fun calculateAverage() {
-    if (students.isEmpty()) {
-        println("Please enter a student detail first")
+    if (names.isEmpty()) {
+        println("No record available.")
     } else {
-        val average = students.sumOf {it.score} / students.size
-        println("The average score is: %.2f".format(average)) // converts to 2 decimal places
+        val average = scores.sum() / scores.size
+        println("The average score is %.2f".format(average))
     }
-
 }
 
 fun deleteStudent() {
+    if (names.isEmpty()) {
+        println("No record available.")
+        return
+    }
+
     println("Enter Student Name: ")
     val searchName = readLine()?.trim()
 
@@ -101,20 +116,25 @@ fun deleteStudent() {
         return
     }
 
-    val delStudent = students.find { it.name.equals(searchName, ignoreCase = true) }
+    val delStudent = names.indexOfFirst { it.equals(searchName, ignoreCase = true) }
 
-    if (delStudent == null) {
+    if (delStudent == -1) {
         println("Student not found.")
     } else {
-        println("Name: ${delStudent.name}, Age: ${delStudent.age}, Score: %.2f".format(delStudent.score))
+        println("Name: ${names[delStudent]} \t Age: ${ages[delStudent]} \t Score: %.2f".format(scores[delStudent]))
         println("Are you sure you want to delete this record? y/n")
         val confirmDelete = readLine()?.trim()
 
-        if (confirmDelete.equals("y", ignoreCase = true)) {
-            students.remove(delStudent)
+        if (confirmDelete.isNullOrBlank()) {
+            println("Input an option.")
+        } else if (confirmDelete.equals("y", ignoreCase = true)) {
+            names.removeAt(delStudent)
+            ages.removeAt(delStudent)
+            scores.removeAt(delStudent)
             println("Record deleted.")
         } else if (confirmDelete.equals("n", ignoreCase = true)) {
             println("Record not deleted.")
-        } else println("Invalid input.")
+        } else println("Input a valid option.")
     }
 }
+
